@@ -1010,7 +1010,7 @@ long long int  clock() { return __clock(); }
 // hip.amdgcn.bc - named sync
 __device__
 inline
-void __named_sync(int a, int b) { __builtin_amdgcn_s_barrier(); }
+void __named_sync(int a, int b) { __builtin_amdgcn_s_barrier(0); }
 
 #endif // __HIP_DEVICE_COMPILE__
 
@@ -1247,30 +1247,30 @@ void __assertfail(const char * __assertion,
 
 __device__
 inline
-static void __work_group_barrier(__cl_mem_fence_flags flags, __memory_scope scope)
+static void __work_group_barrier(__cl_mem_fence_flags flags, __memory_scope scope, num_wg=0)
 {
     if (flags) {
         __atomic_work_item_fence(flags, __memory_order_release, scope);
-        __builtin_amdgcn_s_barrier();
+        __builtin_amdgcn_s_barrier(num_wg);
         __atomic_work_item_fence(flags, __memory_order_acquire, scope);
     } else {
-        __builtin_amdgcn_s_barrier();
+        __builtin_amdgcn_s_barrier(num_wg);
     }
 }
 
 __device__
 inline
-static void __barrier(int n)
+static void __barrier(int n, int num_wg=0)
 {
-  __work_group_barrier((__cl_mem_fence_flags)n, __memory_scope_work_group);
+  __work_group_barrier((__cl_mem_fence_flags)n, __memory_scope_work_group, num_wg);
 }
 
 __device__
 inline
 __attribute__((convergent))
-void __syncthreads()
+void __syncthreads(int num_wg=0)
 {
-  __barrier(__CLK_LOCAL_MEM_FENCE);
+  __barrier(__CLK_LOCAL_MEM_FENCE, num_wg);
 }
 
 __device__
