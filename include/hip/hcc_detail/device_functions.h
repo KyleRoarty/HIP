@@ -1251,10 +1251,16 @@ static void __work_group_barrier(__cl_mem_fence_flags flags, __memory_scope scop
 {
     if (flags) {
         __atomic_work_item_fence(flags, __memory_order_release, scope);
-        __builtin_amdgcn_s_barrier(num_wg);
+        if (num_wg > 0)
+            __builtin_amdgcn_s_barrier(1);
+        else
+            __builtin_amdgcn_s_barrier(0);
         __atomic_work_item_fence(flags, __memory_order_acquire, scope);
     } else {
-        __builtin_amdgcn_s_barrier(num_wg);
+        if (num_wg > 0)
+            __builtin_amdgcn_s_barrier(1);
+        else
+            __builtin_amdgcn_s_barrier(0);
     }
 }
 
