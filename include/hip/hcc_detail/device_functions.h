@@ -1247,7 +1247,7 @@ void __assertfail(const char * __assertion,
 
 __device__
 inline
-static void __work_group_barrier(__cl_mem_fence_flags flags, __memory_scope scope, num_wg=0)
+static void __work_group_barrier(__cl_mem_fence_flags flags, __memory_scope scope, int num_wg=0)
 {
     if (flags) {
         __atomic_work_item_fence(flags, __memory_order_release, scope);
