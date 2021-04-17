@@ -1268,7 +1268,10 @@ __device__
 inline
 static void __barrier(int n, int num_wg=0)
 {
-  __work_group_barrier((__cl_mem_fence_flags)n, __memory_scope_work_group, num_wg);
+  if (num_wg > 0)
+    __work_group_barrier((__cl_mem_fence_flags)n, __memory_scope_device, num_wg);
+  else
+    __work_group_barrier((__cl_mem_fence_flags)n, __memory_scope_work_group, num_wg);
 }
 
 __device__
